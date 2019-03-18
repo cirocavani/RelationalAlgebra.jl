@@ -101,7 +101,7 @@ println("Serves\n")
 println(Serves)
 
 
-println("a. Find all pizzerias frequented by at least one person under the age of 18\n")
+println("a. Find all pizzerias frequented by at least one person under the age of 18.\n")
 
 # Straw Hat, New York Pizza, Pizza Hut
 
