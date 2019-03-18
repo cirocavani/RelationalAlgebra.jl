@@ -219,36 +219,36 @@ Solution Notebooks:
 
 a. Find all pizzerias frequented by at least one person under the age of 18.
 
-[ [Pizza Solution A](examples/Pizza%20Solution%20A.ipynb) ]
+[ [Pizza Solution A](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20A.ipynb) ]
 
 b. Find the names of all females who eat either mushroom or pepperoni pizza (or both).
 
-[ [Pizza Solution B](examples/Pizza%20Solution%20B.ipynb) ]
+[ [Pizza Solution B](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20B.ipynb) ]
 
 c. Find the names of all females who eat both mushroom and pepperoni pizza.
 
-[ [Pizza Solution C](examples/Pizza%20Solution%20C.ipynb) ]
+[ [Pizza Solution C](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20C.ipynb) ]
 
 d. Find all pizzerias that serve at least one pizza that Amy eats for less than $10.00.
 
-[ [Pizza Solution D](examples/Pizza%20Solution%20D.ipynb) ]
+[ [Pizza Solution D](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20D.ipynb) ]
 
 e. Find all pizzerias that are frequented by only females or only males.
 
-[ [Pizza Solution E](examples/Pizza%20Solution%20E.ipynb) ]
+[ [Pizza Solution E](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20E.ipynb) ]
 
 f. For each person, find all pizzas the person eats that are not served by any pizzeria the person frequents.
 
-[ [Pizza Solution F](examples/Pizza%20Solution%20F.ipynb) ]
+[ [Pizza Solution F](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20F.ipynb) ]
 
 g. Find the names of all people who frequent only pizzerias serving at least one pizza they eat.
 
-[ [Pizza Solution G](examples/Pizza%20Solution%20G.ipynb) ]
+[ [Pizza Solution G](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20G.ipynb) ]
 
 h. Find the names of all people who frequent every pizzeria serving at least one pizza they eat.
 
-[ [Pizza Solution H](examples/Pizza%20Solution%20H.ipynb) ]
+[ [Pizza Solution H](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20H.ipynb) ]
 
 i. Find the pizzeria serving the cheapest pepperoni pizza. In the case of ties, return all of the cheapest-pepperoni pizzerias.
 
-[ [Pizza Solution I](examples/Pizza%20Solution%20I.ipynb) ]
+[ [Pizza Solution I](https://nbviewer.jupyter.org/github/cirocavani/RelationalAlgebra.jl/blob/master/examples/Pizza%20Solution%20I.ipynb) ]
