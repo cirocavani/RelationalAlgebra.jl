@@ -1,0 +1,10 @@
+name = "RelationalAlgebra"
+uuid = "3156497c-48de-11e9-3ef0-2b9a4931bd87"
+authors = ["Ciro Cavani <ciro.cavani@gmail.com>"]
+version = "0.0.1"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
