@@ -23,17 +23,24 @@ function ==(relation1::Relation, relation2::Relation)
         relation1.tuples_values == relation2.tuples_values
 end
 
+cpad(s::String, n::Integer) = rpad(lpad(s, (n + textwidth(s)) ÷ 2, " "), n, " ")
+cpad(s, n::Integer) = cpad(string(s), n)
+
 function show(io::IO, relation::Relation)
-    for attribute_name in relation.attributes_names
-        print(io, attribute_name, " ")
+    column_width = 14
+    attributes_names = [cpad(name, column_width) for name in relation.attributes_names]
+    header = string("| ", join(attributes_names, " | "), " |")
+    sep = "-"^textwidth(header)
+    println(io, sep)
+    println(io, header)
+    println(io, sep)
+    rows = length(relation.tuples_values)
+    for (i, relation_tuple) in enumerate(relation.tuples_values)
+        values = [cpad(value, column_width) for value in relation_tuple]
+        row = string("| ", join(values, " | "), " |")
+        println(io, row)
     end
-    print(io, "\n---\n")
-    for relation_tuple in relation.tuples_values
-        for value in relation_tuple
-            print(io, value, " ")
-        end
-        print(io, "\n")
-    end
+    println(io, sep)
 end
 
 function projection(relation::Relation, attributes_names::Symbol...)

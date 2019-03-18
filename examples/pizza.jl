@@ -88,6 +88,19 @@ Frequents = Relation(frequents_attributes, frequents_values)
 Eats = Relation(eats_attributes, eats_values)
 Serves = Relation(serves_attributes, serves_values)
 
+println("Person\n")
+println(Person)
+
+println("Frequents\n")
+println(Frequents)
+
+println("Eats\n")
+println(Eats)
+
+println("Serves\n")
+println(Serves)
+
+
 println("a. Find all pizzerias frequented by at least one person under the age of 18\n")
 
 # Straw Hat, New York Pizza, Pizza Hut
