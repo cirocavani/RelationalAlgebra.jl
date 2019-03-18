@@ -1,7 +1,7 @@
 # Source: https://lagunita.stanford.edu/c4x/DB/RA/asset/opt-rel-algebra.html
 
 using RelationalAlgebra
-import RelationalAlgebra: π, ∪, ∩, -
+import RelationalAlgebra: π
 
 person_attributes = Symbol[:name, :age, :gender]
 frequents_attributes = Symbol[:name, :pizzeria]

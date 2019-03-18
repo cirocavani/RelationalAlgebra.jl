@@ -1,7 +1,7 @@
 # Source: https://lagunita.stanford.edu/c4x/DB/RA/asset/opt-rel-algebra.html
 
 using RelationalAlgebra
-import RelationalAlgebra: π, ∪, ∩, -
+import RelationalAlgebra: π
 
 person_attributes = Symbol[:name, :age, :gender]
 frequents_attributes = Symbol[:name, :pizzeria]
@@ -107,7 +107,7 @@ println("a. Find all pizzerias frequented by at least one person under the age o
 
 r1 = σ(Person, :age, <, 18)
 r2 = ρ(Frequents, :name, :frequents_name)
-r3 = ×(r1, r2)
+r3 = r1 × r2
 r4 = σ(r3, :name, ==, :frequents_name)
 r5 = π(r4, :pizzeria)
 
@@ -125,9 +125,9 @@ println("\nb. Find the names of all females who eat either mushroom or pepperoni
 
 r1 = σ(Eats, :pizza, ==, "pepperoni")
 r2 = σ(Eats, :pizza, ==, "mushroom")
-r3 = ∪(r1, r2)
+r3 = r1 ∪ r2
 r4 = ρ(r3, :name, :eats_name)
-r5 = ×(Person, r4)
+r5 = Person × r4
 r6 = σ(r5, :name, ==, :eats_name)
 r7 = σ(r6, :gender, ==, "female")
 r8 = π(r7, :name)
@@ -147,9 +147,9 @@ r1 = σ(Eats, :pizza, ==, "pepperoni")
 r2 = π(r1, :name)
 r3 = σ(Eats, :pizza, ==, "mushroom")
 r4 = π(r3, :name)
-r5 = ∩(r2, r4)
+r5 = r2 ∩ r4
 r6 = ρ(r5, :name, :eats_name)
-r7 = ×(Person, r6)
+r7 = Person × r6
 r8 = σ(r7, :name, ==, :eats_name)
 r9 = σ(r8, :gender, ==, "female")
 r10 = π(r9, :name)
@@ -167,7 +167,7 @@ println("\nd. Find all pizzerias that serve at least one pizza that Amy eats for
 r1 = σ(Serves, :price, <, 10.0)
 r2 = σ(Eats, :name, ==, "Amy")
 r3 = ρ(r2, :pizza, :eats_pizza)
-r4 = ×(r1, r3)
+r4 = r1 × r3
 r5 = σ(r4, :pizza, ==, :eats_pizza)
 r6 = π(r5, :pizzeria)
 
@@ -185,20 +185,20 @@ println("\ne. Find all pizzerias that are frequented by only females or only mal
 
 r1 = σ(Person, :gender, ==, "female")
 r2 = ρ(r1, :name, :person_name)
-r3 = ×(r2, Frequents)
+r3 = r2 × Frequents
 r4 = σ(r3, :person_name, ==, :name)
 r5 = π(r4, :pizzeria)
 
 r6 = σ(Person, :gender, ==, "male")
 r7 = ρ(r6, :name, :person_name)
-r8 = ×(r7, Frequents)
+r8 = r7 × Frequents
 r9 = σ(r8, :person_name, ==, :name)
 r10 = π(r9, :pizzeria)
 
-r11 = ∪(r5, r10)
-r12 = ∩(r5, r10)
+r11 = r5 ∪ r10
+r12 = r5 ∩ r10
 
-r13 = -(r11, r12)
+r13 = r11 - r12
 
 println(r13)
 
@@ -215,10 +215,10 @@ println("   Return all such person (name) / pizza pairs.\n")
 # Amy: mushroom, Dan: mushroom, Gus: mushroom
 
 r1 = ρ(Person, :name, :person_name)
-r2 = ×(r1, Frequents)
+r2 = r1 × Frequents
 r3 = σ(r2, :person_name, ==, :name)
 r4 = ρ(r3, :pizzeria, :frequents_pizzeria)
-r5 = ×(r4, Serves)
+r5 = r4 × Serves
 r6 = σ(r5, :pizzeria, ==, :frequents_pizzeria)
 r7 = π(r6, :name, :pizza)
 r8 = Eats - r7
@@ -236,13 +236,13 @@ println("\ng. Find the names of all people who frequent only pizzerias serving a
 # Amy, Ben, Dan, Eli, Fay, Gus, Hil
 
 r1 = ρ(Eats, :pizza, :eats_pizza)
-r2 = ×(r1, Serves)
+r2 = r1 × Serves
 r3 = σ(r2, :pizza, ==, :eats_pizza)
 r4 = π(r3, :name, :pizzeria)
-r5 = -(Frequents, r4)
+r5 = Frequents - r4
 r6 = π(r5, :name)
 r7 = π(Person, :name)
-r8 = -(r7, r6)
+r8 = r7 - r6
 
 println(r8)
 
@@ -262,13 +262,13 @@ println("\nh. Find the names of all people who frequent every pizzeria serving a
 # Fay
 
 r1 = ρ(Eats, :pizza, :eats_pizza)
-r2 = ×(r1, Serves)
+r2 = r1 × Serves
 r3 = σ(r2, :pizza, ==, :eats_pizza)
 r4 = π(r3, :name, :pizzeria)
-r5 = -(r4, Frequents)
+r5 = r4 - Frequents
 r6 = π(r5, :name)
 r7 = π(Person, :name)
-r8 = -(r7, r6)
+r8 = r7 - r6
 
 println(r8)
 
@@ -285,11 +285,11 @@ r1 = σ(Serves, :pizza, ==, "pepperoni")
 r2 = π(r1, :pizzeria, :price)
 r3 = ρ(r2, :pizzeria, :other_pizzeria)
 r4 = ρ(r3, :price, :other_price)
-r5 = ×(r2, r4)
+r5 = r2 × r4
 r6 = σ(r5, :price, >, :other_price)
 r7 = π(r6, :pizzeria)
 r8 = π(r1, :pizzeria)
-r9 = -(r8, r7)
+r9 = r8 - r7
 
 println(r9)
 

@@ -123,7 +123,7 @@ end
     B = Relation(B_attributes, B_tuples)
     AB = Relation(AB_attributes, AB_tuples)
 
-    S = ×(A, B)
+    S = A × B
 
     @test S == AB
 
@@ -131,8 +131,6 @@ end
 
 @testset "Set Union" begin
 
-    import RelationalAlgebra: ∪
-
     A_attributes = Symbol[:Name, :Age, :Sex]
     A_tuples = Tuple[
         ("Ram", 14, "M"),
@@ -154,7 +152,7 @@ end
     B = Relation(B_attributes, B_tuples)
     AB = Relation(AB_attributes, AB_tuples)
 
-    S = ∪(A, B)
+    S = A ∪ B
 
     @test S == AB
 
@@ -162,8 +160,6 @@ end
 
 @testset "Set Intersection" begin
 
-    import RelationalAlgebra: ∩
-
     A_attributes = Symbol[:Name, :Age, :Sex]
     A_tuples = Tuple[
         ("Ram", 14, "M"),
@@ -183,7 +179,7 @@ end
     B = Relation(B_attributes, B_tuples)
     AB = Relation(AB_attributes, AB_tuples)
 
-    S = ∩(A, B)
+    S = A ∩ B
 
     @test S == AB
 
@@ -191,8 +187,6 @@ end
 
 @testset "Set Subtraction" begin
 
-    import RelationalAlgebra: -
-
     A_attributes = Symbol[:Name, :Age, :Sex]
     A_tuples = Tuple[
         ("Ram", 14, "M"),
@@ -212,7 +206,7 @@ end
     B = Relation(B_attributes, B_tuples)
     AB = Relation(AB_attributes, AB_tuples)
 
-    S = -(A, B)
+    S = A - B
 
     @test S == AB
 

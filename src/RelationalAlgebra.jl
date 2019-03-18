@@ -1,17 +1,17 @@
 module RelationalAlgebra
 
+import Base: ==, show, ∪, ∩, -
+
 export
     Relation,
-    projection, π,
-    selection, σ,
-    rename, ρ,
-    cross_product, ×,
-    set_union, ∪,
-    set_intersection, ∩,
-    set_subtraction, -
+    π, projection,
+    σ, selection,
+    ρ, rename,
+    ×, cross_product,
+    set_union,
+    set_intersection,
+    set_subtraction
 
-
-import Base: ==, show
 
 struct Relation
     attributes_names::Vector{Symbol}
