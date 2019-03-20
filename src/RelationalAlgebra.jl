@@ -34,8 +34,7 @@ function show(io::IO, relation::Relation)
     println(io, sep)
     println(io, header)
     println(io, sep)
-    rows = length(relation.tuples_values)
-    for (i, relation_tuple) in enumerate(relation.tuples_values)
+    for relation_tuple in relation.tuples_values
         values = [cpad(value, column_width) for value in relation_tuple]
         row = string("| ", join(values, " | "), " |")
         println(io, row)
