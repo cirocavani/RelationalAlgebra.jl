@@ -129,6 +129,42 @@ end
 
 end
 
+@testset "Natural Join" begin
+
+    A = Relation([:a], [])
+    B = Relation([:b], [])
+    @test_throws ErrorException A ⨝ B
+
+    A_attributes = Symbol[:Name, :Id, :Dept_name]
+    A_tuples = Tuple[
+        ("A", 120, "IT"),
+        ("B", 125, "HR"),
+        ("C", 110, "Sale"),
+        ("D", 111, "IT"),
+    ]
+    B_attributes = Symbol[:Dept_name, :Manager]
+    B_tuples = Tuple[
+        ("Sale", "Y"),
+        ("Prod", "Z"),
+        ("IT", "A"),
+    ]
+    AB_attributes = Symbol[:Name, :Id, :Dept_name, :Manager]
+    AB_tuples = Tuple[
+        ("A", 120, "IT", "A"),
+        ("C", 110, "Sale", "Y"),
+        ("D", 111, "IT", "A"),
+    ]
+
+    A = Relation(A_attributes, A_tuples)
+    B = Relation(B_attributes, B_tuples)
+    AB = Relation(AB_attributes, AB_tuples)
+
+    S = A ⨝ B
+
+    @test S == AB
+
+end
+
 @testset "Set Union" begin
 
     A_attributes = Symbol[:Name, :Age, :Sex]

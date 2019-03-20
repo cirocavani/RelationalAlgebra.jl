@@ -8,10 +8,10 @@ export
     σ, selection,
     ρ, rename,
     ×, cross_product,
+    ⨝, natural_join,
     set_union,
     set_intersection,
     set_subtraction
-
 
 struct Relation
     attributes_names::Vector{Symbol}
@@ -101,7 +101,7 @@ end
 ρ(relation::Relation, attribute_name::Symbol, new_attribute_name::Symbol) = rename(relation, attribute_name, new_attribute_name)
 
 function cross_product(relation1::Relation, relation2::Relation)
-    isempty(intersect(relation1.attributes_names, relation2.attributes_names)) || error("Attributes with same name!")
+    isempty(intersect(relation1.attributes_names, relation2.attributes_names)) || error("Attributes with same name found!")
     attributes_names = vcat(relation1.attributes_names, relation2.attributes_names)
     tuples_values = [(t1..., t2...) for t2 in relation2.tuples_values, t1 in relation1.tuples_values]
     tuples_values = reshape(tuples_values, length(tuples_values))
@@ -109,6 +109,37 @@ function cross_product(relation1::Relation, relation2::Relation)
 end
 
 ×(relation1::Relation, relation2::Relation) = cross_product(relation1, relation2)
+
+function merge_join(tuple1::Tuple, tuple2::Tuple, tuple2_indices::Vector{Int})
+    if isempty(tuple2_indices)
+        return tuple1
+    end
+    return (tuple1..., tuple2[tuple2_indices]...)
+end
+
+function test_join(tuple1::Tuple, tuple2::Tuple, tuple1_indices::Vector{Int}, tuple2_indices::Vector{Int})
+    return all(tuple1[i] == tuple2[j] for (i, j) in zip(tuple1_indices, tuple2_indices))
+end
+
+function natural_join(relation1::Relation, relation2::Relation)
+    join_attributes = intersect(relation1.attributes_names, relation2.attributes_names)
+    !isempty(join_attributes) || error("Attributes with same name missing!")
+    relation1_indices = map(join_attributes) do attribute_name
+        findfirst(relation1.attributes_names .== attribute_name)
+    end
+    relation2_indices = map(join_attributes) do attribute_name
+        findfirst(relation2.attributes_names .== attribute_name)
+    end
+    tuple2_mask = setdiff(1:length(relation2.attributes_names), relation2_indices)
+    tuples_values = [
+        merge_join(t1, t2, tuple2_mask)
+        for t2 in relation2.tuples_values, t1 in relation1.tuples_values
+        if test_join(t1, t2, relation1_indices, relation2_indices)]
+    attributes_names = union(relation1.attributes_names, relation2.attributes_names)
+    return Relation(attributes_names, tuples_values)
+end
+
+⨝(relation1::Relation, relation2::Relation) = natural_join(relation1, relation2)
 
 function set_union(relation1::Relation, relation2::Relation)
     relation1.attributes_names == relation2.attributes_names || error("Ralations with different attributes!")
