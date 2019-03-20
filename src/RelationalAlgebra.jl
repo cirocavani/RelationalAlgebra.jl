@@ -44,16 +44,14 @@ function show(io::IO, relation::Relation)
 end
 
 function projection(relation::Relation, attributes_names::Symbol...)
-    attributes_indices = map(attributes_names) do attribute_name
-        attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
+    isempty(setdiff(attributes_names, relation.attributes_names)) || error("Attribute name not found!")
+    attributes_array = collect(attributes_names)
+    attributes_indices = map(attributes_array) do attribute_name
         findfirst(relation.attributes_names .== attribute_name)
     end
-    tuples_values = map(relation.tuples_values) do relation_tuple
-        projection_vector = map(i -> relation_tuple[i], attributes_indices)
-        tuple(projection_vector...)
-    end
+    tuples_values = [t[attributes_indices] for t in relation.tuples_values]
     unique!(tuples_values)
-    return Relation(collect(attributes_names), tuples_values)
+    return Relation(attributes_array, tuples_values)
 end
 
 π(relation::Relation, attributes_names::Symbol...) = projection(relation, attributes_names...)

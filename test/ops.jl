@@ -7,6 +7,9 @@ using Test
 
     import RelationalAlgebra: π
 
+    R = Relation([:A, :B], [])
+    @test_throws ErrorException π(R, :A, :X)
+
     attributes_names = Symbol[:A, :B, :C]
     tuples_values = Tuple[
         (1, 2, 4),
