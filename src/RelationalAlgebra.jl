@@ -42,6 +42,11 @@ function show(io::IO, relation::Relation)
     println(io, sep)
 end
 
+
+#
+# Projection π
+#
+
 function projection(relation::Relation, attributes_names::Symbol...)
     isempty(setdiff(attributes_names, relation.attributes_names)) || error("Attribute name not found!")
     attributes_array = collect(attributes_names)
@@ -55,39 +60,41 @@ end
 
 π(relation::Relation, attributes_names::Symbol...) = projection(relation, attributes_names...)
 
-function selection_filter_const(tuples::Vector{Tuple}, cmp::Function, op1_index::Int, op2_value::Any)
-    return filter(tuples) do relation_tuple
-        op1_value = relation_tuple[op1_index]
-        cmp(op1_value, op2_value)
-    end
-end
 
-function selection_filter_pair(tuples::Vector{Tuple}, cmp::Function, op1_index::Int, op2_index::Int)
-    return filter(tuples) do relation_tuple
+#
+# Selection σ
+#
+
+function selection(relation::Relation, attribute_name::Symbol, cmp_operator::Function, value::Symbol)
+    attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
+    value ∈ relation.attributes_names || error("Value attribute name not found!")
+    op1_index = findfirst(relation.attributes_names .== attribute_name)
+    op2_index = findfirst(relation.attributes_names .== value)
+    tuples_values = filter(relation.tuples_values) do relation_tuple
         op1_value = relation_tuple[op1_index]
         op2_value = relation_tuple[op2_index]
-        cmp(op1_value, op2_value)
+        cmp_operator(op1_value, op2_value)
     end
-end
-
-function selection(relation::Relation, attribute_name::Symbol, operator::Function, value::Any)
-    attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
-    op1_index = findfirst(relation.attributes_names .== attribute_name)
-
-    tuples_values = relation.tuples_values
-
-    if value isa Symbol
-        value ∈ relation.attributes_names || error("Value attribute name not found!")
-        op2_index = findfirst(relation.attributes_names .== value)
-        tuples_values = selection_filter_pair(tuples_values, operator, op1_index, op2_index)
-    else
-        tuples_values = selection_filter_const(tuples_values, operator, op1_index, value)
-    end
-
     return Relation(copy(relation.attributes_names), tuples_values)
 end
 
-σ(relation::Relation, attribute_name::Symbol, operator::Function, value::Any) = selection(relation, attribute_name, operator, value)
+function selection(relation::Relation, attribute_name::Symbol, cmp_operator::Function, value::Any)
+    attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
+    op1_index = findfirst(relation.attributes_names .== attribute_name)
+    tuples_values = filter(relation.tuples_values) do relation_tuple
+        op1_value = relation_tuple[op1_index]
+        cmp_operator(op1_value, value)
+    end
+    return Relation(copy(relation.attributes_names), tuples_values)
+end
+
+σ(relation::Relation, attribute_name::Symbol, cmp_operator::Function, value::Symbol) = selection(relation, attribute_name, cmp_operator, value)
+σ(relation::Relation, attribute_name::Symbol, cmp_operator::Function, value::Any) = selection(relation, attribute_name, cmp_operator, value)
+
+
+#
+# Rename ρ
+#
 
 function rename(relation::Relation, attributes_renames::Pair{Symbol, Symbol}...)
     attributes_names_in, attributes_names_out = zip(attributes_renames...)
@@ -104,6 +111,11 @@ end
 
 ρ(relation::Relation, attributes_renames::Pair{Symbol, Symbol}...) = rename(relation, attributes_renames...)
 
+
+#
+# Cross Product ×
+#
+
 function cross_product(relation1::Relation, relation2::Relation)
     isempty(intersect(relation1.attributes_names, relation2.attributes_names)) || error("Attributes with same name found!")
     attributes_names = vcat(relation1.attributes_names, relation2.attributes_names)
@@ -113,6 +125,11 @@ function cross_product(relation1::Relation, relation2::Relation)
 end
 
 ×(relation1::Relation, relation2::Relation) = cross_product(relation1, relation2)
+
+
+#
+# Natural Join ⨝
+#
 
 function merge_join(tuple1::Tuple, tuple2::Tuple, tuple2_indices::Vector{Int})
     if isempty(tuple2_indices)
@@ -145,6 +162,11 @@ end
 
 ⨝(relation1::Relation, relation2::Relation) = natural_join(relation1, relation2)
 
+
+#
+# Union ∪
+#
+
 function set_union(relation1::Relation, relation2::Relation)
     relation1.attributes_names == relation2.attributes_names || error("Ralations with different attributes!")
     attributes_names = copy(relation1.attributes_names)
@@ -153,6 +175,11 @@ function set_union(relation1::Relation, relation2::Relation)
 end
 
 ∪(relation1::Relation, relation2::Relation) = set_union(relation1, relation2)
+
+
+#
+# Intersection ∩
+#
 
 function set_intersection(relation1::Relation, relation2::Relation)
     relation1.attributes_names == relation2.attributes_names || error("Ralations with different attributes!")
@@ -163,6 +190,11 @@ end
 
 ∩(relation1::Relation, relation2::Relation) = set_intersection(relation1, relation2)
 
+
+#
+# Subtraction -
+#
+
 function set_subtraction(relation1::Relation, relation2::Relation)
     relation1.attributes_names == relation2.attributes_names || error("Ralations with different attributes!")
     attributes_names = copy(relation1.attributes_names)
@@ -171,5 +203,6 @@ function set_subtraction(relation1::Relation, relation2::Relation)
 end
 
 -(relation1::Relation, relation2::Relation) = set_subtraction(relation1, relation2)
+
 
 end # module
