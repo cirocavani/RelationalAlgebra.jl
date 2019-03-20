@@ -89,16 +89,18 @@ end
 
 σ(relation::Relation, attribute_name::Symbol, operator::Function, value::Any) = selection(relation, attribute_name, operator, value)
 
-function rename(relation::Relation, attribute_name::Symbol, new_attribute_name::Symbol)
-    attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
-    new_attribute_name ∉ relation.attributes_names || error("New attribute name found!")
-    attribute_index = findfirst(relation.attributes_names .== attribute_name)
-    attributes_names = copy(relation.attributes_names)
-    attributes_names[attribute_index] = new_attribute_name
-    return Relation(attributes_names, copy(relation.tuples_values))
+function rename(relation::Relation, attributes_renames::Pair{Symbol, Symbol}...)
+    for (attribute_name, new_attribute_name) in attributes_renames
+        attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
+        new_attribute_name ∉ relation.attributes_names || error("New attribute name found!")
+    end
+    attributes_names = replace(relation.attributes_names, attributes_renames...)
+    tuples_values = copy(relation.tuples_values)
+
+    return Relation(attributes_names, tuples_values)
 end
 
-ρ(relation::Relation, attribute_name::Symbol, new_attribute_name::Symbol) = rename(relation, attribute_name, new_attribute_name)
+ρ(relation::Relation, attributes_renames::Pair{Symbol, Symbol}...) = rename(relation, attributes_renames...)
 
 function cross_product(relation1::Relation, relation2::Relation)
     isempty(intersect(relation1.attributes_names, relation2.attributes_names)) || error("Attributes with same name found!")

@@ -78,6 +78,18 @@ end
 
 @testset "Rename" begin
 
+    R = Relation([:A, :B], [])
+    @test_throws ErrorException ρ(R, :X => :Y)
+    @test_throws ErrorException ρ(R, :X => :A)
+    @test_throws ErrorException ρ(R, :X => :B)
+    @test_throws ErrorException ρ(R, :A => :B)
+    @test_throws ErrorException ρ(R, :B => :A)
+
+    @test_throws ErrorException ρ(R, :A => :C, :B => :A)
+
+    S = Relation([:X, :Y], [])
+    @test ρ(R, :A => :X, :B => :Y) == S
+
     attributes_names = Symbol[:A, :B, :C]
     tuples_values = Tuple[
         (1, 2, 4),
@@ -85,12 +97,12 @@ end
         (3, 2, 3),
         (4, 3, 4),
     ]
-    expected_names = Symbol[:A, :X, :C]
+    expected_names = Symbol[:X, :Y, :Z]
 
     R = Relation(attributes_names, tuples_values)
     X = Relation(expected_names, tuples_values)
 
-    S = ρ(R, :B, :X)
+    S = ρ(R, :A => :X, :B => :Y, :C => :Z)
 
     @test S == X
 

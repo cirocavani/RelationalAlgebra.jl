@@ -268,18 +268,17 @@ println("\ni. Find the pizzeria serving the cheapest pepperoni pizza. In the cas
 
 r1 = σ(Serves, :pizza, ==, "pepperoni")
 r2 = π(r1, :pizzeria, :price)
-r3 = ρ(r2, :pizzeria, :other_pizzeria)
-r4 = ρ(r3, :price, :other_price)
-r5 = r2 × r4
-r6 = σ(r5, :price, >, :other_price)
-r7 = π(r6, :pizzeria)
-r8 = π(r1, :pizzeria)
-r9 = r8 - r7
+r3 = ρ(r2, :pizzeria => :other_pizzeria, :price => :other_price)
+r4 = r2 × r3
+r5 = σ(r4, :price, >, :other_price)
+r6 = π(r5, :pizzeria)
+r7 = π(r1, :pizzeria)
+r8 = r7 - r6
 
-result = [t[1] for t in r9.tuples_values]
+result = [t[1] for t in r8.tuples_values]
 @assert length(result) == 2
 @assert "Straw Hat" ∈ result
 @assert "New York Pizza" ∈ result
 
-println(r9)
+println(r8)
 
