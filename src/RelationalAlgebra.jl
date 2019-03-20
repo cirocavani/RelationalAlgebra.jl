@@ -73,9 +73,12 @@ end
 
 function selection(relation::Relation, attribute_name::Symbol, operator::Function, value::Any)
     attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
-    tuples_values = relation.tuples_values
     op1_index = findfirst(relation.attributes_names .== attribute_name)
+
+    tuples_values = relation.tuples_values
+
     if value isa Symbol
+        value ∈ relation.attributes_names || error("Value attribute name not found!")
         op2_index = findfirst(relation.attributes_names .== value)
         tuples_values = selection_filter_pair(tuples_values, operator, op1_index, op2_index)
     else
@@ -88,10 +91,12 @@ end
 σ(relation::Relation, attribute_name::Symbol, operator::Function, value::Any) = selection(relation, attribute_name, operator, value)
 
 function rename(relation::Relation, attributes_renames::Pair{Symbol, Symbol}...)
-    for (attribute_name, new_attribute_name) in attributes_renames
-        attribute_name ∈ relation.attributes_names || error("Attribute name not found!")
-        new_attribute_name ∉ relation.attributes_names || error("New attribute name found!")
-    end
+    attributes_names_in, attributes_names_out = zip(attributes_renames...)
+    allunique(attributes_names_in) || error("In attribute name duplicated!")
+    allunique(attributes_names_out) || error("Out attribute name duplicated!")
+    isempty(setdiff(attributes_names_in, relation.attributes_names)) || error("In attribute name not found!")
+    isempty(intersect(attributes_names_out, relation.attributes_names)) || error("Out attribute name found!")
+
     attributes_names = replace(relation.attributes_names, attributes_renames...)
     tuples_values = copy(relation.tuples_values)
 

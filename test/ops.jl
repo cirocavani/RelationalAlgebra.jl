@@ -8,7 +8,6 @@ using Test
     import RelationalAlgebra: π
 
     R = Relation([:A, :B], [])
-    @test_throws ErrorException π(R, :A, :X)
 
     attributes_names = Symbol[:A, :B, :C]
     tuples_values = Tuple[
@@ -17,23 +16,24 @@ using Test
         (3, 2, 3),
         (4, 3, 4),
     ]
+    R = Relation(attributes_names, tuples_values)
+
     expected_names = Symbol[:B, :C]
     expected_values = Tuple[
         (2, 4),
         (2, 3),
         (3, 4),
     ]
-
-    R = Relation(attributes_names, tuples_values)
     X = Relation(expected_names, expected_values)
-
     S = π(R, :B, :C)
-
     @test S == X
+
+    @test_throws ErrorException π(R, :A, :X)
+    @test_throws ErrorException π(R, :X, :B)
 
 end
 
-@testset "Selection Const Value" begin
+@testset "Selection" begin
 
     attributes_names = Symbol[:A, :B, :C]
     tuples_values = Tuple[
@@ -42,46 +42,47 @@ end
         (3, 2, 3),
         (4, 3, 4),
     ]
+    R = Relation(attributes_names, tuples_values)
+
     expected_values = Tuple[
         (1, 2, 4),
         (4, 3, 4),
     ]
-
-    R = Relation(attributes_names, tuples_values)
     X = Relation(attributes_names, expected_values)
-
     S = σ(R, :C, >, 3)
-
     @test S == X
 
-end
-
-@testset "Selection Attribute Value" begin
-
-    attributes_names = Symbol[:A, :B, :C]
-    tuples_values = Tuple[
-        (1, 2, 4),
-        (2, 2, 3),
-        (3, 2, 3),
-        (4, 3, 4),
-    ]
     expected_values = Tuple[
         (3, 2, 3),
         (4, 3, 4),
     ]
-
-    R = Relation(attributes_names, tuples_values)
     X = Relation(attributes_names, expected_values)
-
     S = σ(R, :A, ==, :C)
-
     @test S == X
+
+    @test_throws ErrorException σ(R, :X, ==, 0)
+    @test_throws ErrorException σ(R, :X, >, :B)
+    @test_throws ErrorException σ(R, :A, <, :X)
 
 end
 
 @testset "Rename" begin
 
-    R = Relation([:A, :B], [])
+    attributes_names = Symbol[:A, :B, :C]
+    tuples_values = Tuple[
+        (1, 2, 4),
+        (2, 2, 3),
+        (3, 2, 3),
+        (4, 3, 4),
+    ]
+    R = Relation(attributes_names, tuples_values)
+
+    expected_names = Symbol[:X, :Y, :Z]
+    X = Relation(expected_names, tuples_values)
+    S = ρ(R, :A => :X, :B => :Y, :C => :Z)
+
+    @test S == X
+
     @test_throws ErrorException ρ(R, :X => :Y)
     @test_throws ErrorException ρ(R, :X => :A)
     @test_throws ErrorException ρ(R, :X => :B)
@@ -89,25 +90,8 @@ end
     @test_throws ErrorException ρ(R, :B => :A)
 
     @test_throws ErrorException ρ(R, :A => :C, :B => :A)
-
-    S = Relation([:X, :Y], [])
-    @test ρ(R, :A => :X, :B => :Y) == S
-
-    attributes_names = Symbol[:A, :B, :C]
-    tuples_values = Tuple[
-        (1, 2, 4),
-        (2, 2, 3),
-        (3, 2, 3),
-        (4, 3, 4),
-    ]
-    expected_names = Symbol[:X, :Y, :Z]
-
-    R = Relation(attributes_names, tuples_values)
-    X = Relation(expected_names, tuples_values)
-
-    S = ρ(R, :A => :X, :B => :Y, :C => :Z)
-
-    @test S == X
+    @test_throws ErrorException ρ(R, :A => :X, :B => :X)
+    @test_throws ErrorException ρ(R, :A => :X, :A => :Y)
 
 end
 
@@ -142,13 +126,13 @@ end
 
     @test S == AB
 
+    A = Relation([:x, :y], [])
+    B = Relation([:x, :z], [])
+    @test_throws ErrorException A × B
+
 end
 
 @testset "Natural Join" begin
-
-    A = Relation([:a], [])
-    B = Relation([:b], [])
-    @test_throws ErrorException A ⨝ B
 
     A_attributes = Symbol[:Name, :Id, :Dept_name]
     A_tuples = Tuple[
@@ -177,6 +161,28 @@ end
     S = A ⨝ B
 
     @test S == AB
+
+    C_attributes = Symbol[:Dept_name]
+    C_tuples = Tuple[
+        ("Prod",),
+        ("IT",),
+    ]
+    AC_attributes = Symbol[:Name, :Id, :Dept_name]
+    AC_tuples = Tuple[
+        ("A", 120, "IT"),
+        ("D", 111, "IT"),
+    ]
+
+    C = Relation(C_attributes, C_tuples)
+    AC = Relation(AC_attributes, AC_tuples)
+
+    S = A ⨝ C
+
+    @test S == AC
+
+    A = Relation([:a, :x], [])
+    B = Relation([:b, :y], [])
+    @test_throws ErrorException A ⨝ B
 
 end
 
@@ -207,6 +213,10 @@ end
 
     @test S == AB
 
+    A = Relation([:x, :y], [])
+    B = Relation([:x, :z], [])
+    @test_throws ErrorException A ∪ B
+
 end
 
 @testset "Set Intersection" begin
@@ -234,6 +244,10 @@ end
 
     @test S == AB
 
+    A = Relation([:x, :y], [])
+    B = Relation([:x, :z], [])
+    @test_throws ErrorException A ∩ B
+
 end
 
 @testset "Set Subtraction" begin
@@ -260,5 +274,9 @@ end
     S = A - B
 
     @test S == AB
+
+    A = Relation([:x, :y], [])
+    B = Relation([:x, :z], [])
+    @test_throws ErrorException A - B
 
 end
