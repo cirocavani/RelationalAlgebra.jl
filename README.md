@@ -17,7 +17,7 @@ Local Install.
 
 ```julia
 using Pkg
-Pkg.add(PackageSpec(url="<path to local git repo"))
+Pkg.add(PackageSpec(url="<path to local git repo>"))
 Pkg.test("RelationalAlgebra")
 ```
 
